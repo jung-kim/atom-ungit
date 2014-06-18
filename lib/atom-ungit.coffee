@@ -29,6 +29,6 @@ module.exports =
 
     previousActivePane = atom.workspace.getActivePane()
     atom.workspace.open(uri, searchAllPanes: true).done (ungitView) ->
-      if ungitView instanceof UngitView
+      if ungitView instanceof AtomUngitView
         ungitView.renderHTML()
         previousActivePane.activate()
