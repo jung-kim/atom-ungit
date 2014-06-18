@@ -1,0 +1,15 @@
+{
+  "name": "atom-ungit",
+  "main": "./lib/atom-ungit",
+  "version": "0.0.0",
+  "description": "Atom package for ungit",
+  "activationEvents": ["ungit:toggle"],
+  "repository": "https://github.com/codingtwinky/atom-ungit",
+  "license": "MIT",
+  "engines": {
+    "atom": ">0.50.0"
+  },
+  "dependencies": {
+    "ungit": "=0.8.1"
+  }
+}

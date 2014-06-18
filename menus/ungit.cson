@@ -1,0 +1,16 @@
+# See https://atom.io/docs/latest/creating-a-package#menus for more details
+'context-menu':
+  '.overlayer':
+      'Enable ungit': 'ungit:toggle'
+
+'menu': [
+  {
+    'label': 'Packages'
+    'submenu': [
+      'label': 'Ungit'
+      'submenu': [
+        { 'label': 'Toggle Ungit', 'command': 'ungit:toggle' }
+      ]
+    ]
+  }
+]
