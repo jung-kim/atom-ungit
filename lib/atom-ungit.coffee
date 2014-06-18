@@ -1,6 +1,6 @@
 url = require 'url'
 
-UngitView = require './atom-ungit-view'
+AtomUngitView = require './atom-ungit-view'
 
 module.exports =
   ungitView: null
