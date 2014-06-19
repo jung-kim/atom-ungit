@@ -40,6 +40,9 @@ class AtomUngitView extends ScrollView
     iframe = document.createElement("iframe")
     iframe.src = "http://127.0.0.1:8448"
     iframe.sandbox="allow-same-origin allow-scripts"
+    iframe.width = "100%"
+    iframe.height = "100%"
+
     @html $ iframe
     @trigger('atom-html-preview:html-changed')
 
