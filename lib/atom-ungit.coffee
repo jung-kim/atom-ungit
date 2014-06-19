@@ -26,12 +26,13 @@ module.exports =
 
     previewPane = atom.workspace.paneForUri(uri)
     if previewPane
+      this.ungit.kill()
       previewPane.destroyItem(previewPane.itemForUri(uri))
       return
 
     console.log path.join(__dirname, '../node_modules/ungit/bin/ungit') + ' --no-b'
 
-    ungit = child_process.exec(path.join(__dirname, '../node_modules/ungit/bin/ungit') + ' --no-b')
+    this.ungit = child_process.exec(path.join(__dirname, '../node_modules/ungit/bin/ungit') + ' --no-b')
     # in some cases, $PATH is not sourced with .bashrc, .profile nor .bash_profile
     # I have resolved this issue by establishing a symbolic link but need better solutions.
 
@@ -39,8 +40,8 @@ module.exports =
 
     started = false
 
-    ungit.unref();
-    ungit.stdout.on "data", (data) ->
+    this.ungit.unref();
+    this.ungit.stdout.on "data", (data) ->
       if !started && data.toString().contains('## Ungit started ##')
         started = true
         previousActivePane = atom.workspace.getActivePane()
@@ -50,6 +51,6 @@ module.exports =
             previousActivePane.activate()
       return
 
-    ungit.stderr.on "data", (data) ->
+    this.ungit.stderr.on "data", (data) ->
       console.log data.toString()
       return
