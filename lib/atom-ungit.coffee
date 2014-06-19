@@ -42,13 +42,15 @@ module.exports =
 
     this.ungit.unref();
     this.ungit.stdout.on "data", (data) ->
-      if !started && (data.toString().contains('## Ungit started ##') || data.toString().contains('Ungit server already running'))
+      message = data.toString();
+      if !started && (message.contains('## Ungit started ##') || message.contains('Ungit server already running'))
         started = true
         previousActivePane = atom.workspace.getActivePane()
         atom.workspace.open(uri, searchAllPanes: true).done (ungitView) ->
           if ungitView instanceof AtomUngitView
             ungitView.renderHTML()
             previousActivePane.activate()
+      console.log message
       return
 
     this.ungit.stderr.on "data", (data) ->
