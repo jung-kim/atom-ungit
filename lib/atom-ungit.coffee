@@ -34,21 +34,22 @@ module.exports =
     ungit = child_process.exec(path.join(__dirname, '../node_modules/ungit/bin/ungit') + ' --no-b')
     # in some cases, $PATH is not sourced with .bashrc, .profile nor .bash_profile
     # I have resolved this issue by establishing a symbolic link but need better solutions.
-    
+
     # ungit = child_process.exec('echo $PATH')
+
+    started = false
 
     ungit.unref();
     ungit.stdout.on "data", (data) ->
-      console.log data.toString()
+      if !started && data.toString().contains('## Ungit started ##')
+        started = true
+        previousActivePane = atom.workspace.getActivePane()
+        atom.workspace.open(uri, searchAllPanes: true).done (ungitView) ->
+          if ungitView instanceof AtomUngitView
+            ungitView.renderHTML()
+            previousActivePane.activate()
       return
 
     ungit.stderr.on "data", (data) ->
       console.log data.toString()
       return
-
-
-    previousActivePane = atom.workspace.getActivePane()
-    atom.workspace.open(uri, searchAllPanes: true).done (ungitView) ->
-      if ungitView instanceof AtomUngitView
-        ungitView.renderHTML()
-        previousActivePane.activate()
