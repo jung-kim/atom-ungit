@@ -45,8 +45,6 @@ module.exports =
     if @closeUngit()
       return;
 
-    console.log path.join(__dirname, '../node_modules/ungit/bin/ungit') + ' --no-b'
-
     this.ungit = child_process.exec(path.join(__dirname, '../node_modules/ungit/bin/ungit') + ' --no-b')
     # in some cases, $PATH is not sourced with .bashrc, .profile nor .bash_profile
     # I have resolved this issue by establishing a symbolic link but need better solutions.

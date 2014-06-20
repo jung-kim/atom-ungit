@@ -1,6 +1,6 @@
 # ungit package for Atom.io
 
-This is the Atom.io package for bringing in [ungit](https://github.com/FredrikNoren/ungit) to Atom.io.
+A project to bring in [ungit](https://github.com/FredrikNoren/ungit) to Atom.io.
 
 Key maps:
  * ctrl-alt-u: If ungit tab is opened, close ungit tab.  Else, attempt to start ungit server and open ungit tab.
