@@ -32,16 +32,18 @@ module.exports =
         child_process.exec 'kill ' + line.split(' ')[1]
         console.log 'kill ' + line.split(' ')[1]
         return
+    @closeUngit()
+
+  closeUngit: ->
     previewPane = atom.workspace.paneForUri(@uri)
     if previewPane
       previewPane.destroyItem(previewPane.itemForUri(@uri))
-      return
+      return true;
+    return false;
 
   toggle: ->
-    previewPane = atom.workspace.paneForUri(@uri)
-    if previewPane
-      previewPane.destroyItem(previewPane.itemForUri(@uri))
-      return
+    if @closeUngit()
+      return;
 
     console.log path.join(__dirname, '../node_modules/ungit/bin/ungit') + ' --no-b'
 
