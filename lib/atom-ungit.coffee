@@ -8,7 +8,7 @@ module.exports =
   ungit: null
   uri: "ungit://ungit-URI"
 
-  activate: (state) ->
+  activate: () ->
     atom.workspaceView.command 'ungit:toggle', =>
       @toggle()
 
