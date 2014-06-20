@@ -1,7 +1,7 @@
 {
   "name": "atom-ungit",
   "main": "./lib/atom-ungit",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Atom package for ungit",
   "activationEvents": [
     "ungit:toggle"
