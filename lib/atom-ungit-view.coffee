@@ -5,46 +5,27 @@ class AtomUngitView extends ScrollView
   atom.deserializers.add(this)
 
   @content: ->
-    @div class: 'atom-html-preview native-key-bindings', tabindex: -1
+    @div class: 'atom-ungit native-key-bindings', tabindex: -1
 
   destroy: ->
     @unsubscribe()
 
-  renderHTML: ->
+  loadUngit: ->
     @showLoading()
-    @renderHTMLCode()
+    @createIframe()
 
-  renderHTMLCode: () ->
-    text = """
-    <!doctype html>
-    <html>
-      <head>
-        <meta charset="utf-8">
-        <title>HTML Preview</title>
-        <style>
-          body {
-            font-family: "Helvetica Neue", Helvetica, sans-serif;
-            font-size: 14px;
-            line-height: 1.6;
-            background-color: #fff;
-            overflow: scroll;
-            box-sizing: border-box;
-          }
-        </style>
-      </head>
-      <body>
-
-      </body>
-    </html>
-    """
+  createIframe: ->
     iframe = document.createElement("iframe")
-    iframe.src = "http://127.0.0.1:8448"
     iframe.sandbox="allow-same-origin allow-scripts"
-    iframe.width = "100%"
-    iframe.height = "100%"
+    iframe.src = @getRepoUri()
 
     @html $ iframe
-    @trigger('atom-html-preview:html-changed')
+
+  getRepoUri: ->
+    uri = "http://127.0.0.1:8448"
+    if atom.project.getRootDirectory()
+      uri += "/#/repository?path=" + atom.project.getRootDirectory().path
+    uri
 
   getTitle: ->
     "Ungit"
@@ -56,9 +37,9 @@ class AtomUngitView extends ScrollView
     failureMessage = result?.message
 
     @html $$$ ->
-      @h2 'Previewing HTML Failed'
+      @h2 'Loading Ungit Failed!'
       @h3 failureMessage if failureMessage?
 
   showLoading: ->
     @html $$$ ->
-      @div class: 'atom-html-spinner', 'Loading HTML Preview\u2026'
+      @div class: 'atom-html-spinner', 'Loading Ungit\u2026'
