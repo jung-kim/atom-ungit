@@ -9,7 +9,8 @@
     'submenu': [
       'label': 'Ungit'
       'submenu': [
-        { 'label': 'Toggle Ungit', 'command': 'ungit:toggle' }
+        { 'label': 'Open Ungit', 'command': 'ungit:toggle' },
+        { 'label': 'Shutdown Ungit', 'command': 'ungit:kill' }
       ]
     ]
   }
