@@ -26,13 +26,14 @@ module.exports =
       new AtomUngitView()
 
   kill: ->
-    ps_result = child_process.exec('ps -ef | grep ungit')
+    ps_result = child_process.exec("ps -ef | grep 'ungit --no-b\|server.js --no-b'")
     ps_result.stdout.on 'data', (data) ->
       data.split('\n').map (line) ->
         child_process.exec 'kill ' + line.split(' ')[1]
         console.log 'kill ' + line.split(' ')[1]
         return
     @closeUngit()
+    return
 
   closeUngit: ->
     previewPane = atom.workspace.paneForUri(@uri)
