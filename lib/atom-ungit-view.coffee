@@ -32,7 +32,7 @@ class AtomUngitView extends ScrollView
   getRepoUri: ->
     uri = "http://127.0.0.1:8448"
     if atom.project.getRootDirectory()
-      uri += "/#/repository?path=" + atom.project.getRootDirectory().path
+      uri += "/?noheader=true#/repository?path=" + atom.project.getRootDirectory().path
     uri
 
   getTitle: ->
