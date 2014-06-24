@@ -3,6 +3,13 @@ child_process = require 'child_process'
 path = require 'path'
 AtomUngitView = require './atom-ungit-view'
 isWin = /^win/.test process.platform
+http = require 'http'
+
+getOptions = (path) ->
+  host: "127.0.0.1"
+  port: 8448
+  path: path
+  method: "POST"
 
 module.exports =
   ungitView: null
@@ -27,16 +34,8 @@ module.exports =
       new AtomUngitView()
 
   kill: ->
-    if isWin
-      # possible solutions for windows, need someone with windows machine to test.
-      # child_process.exec 'taskkill /IM ungit'
-    else
-      ps_result = child_process.exec("/bin/ps -ef | grep 'ungit --no-b\|server.js --no-b'")
-      ps_result.stdout.on 'data', (data) ->
-        data.split('\n').map (line) ->
-          child_process.exec 'kill ' + line.split(' ')[1]
-          console.log 'kill ' + line.split(' ')[1]
-          return
+    http.request(getOptions("/api/testing/cleanup")).end()
+    http.request(getOptions("/api/testing/shutdown")).end()
     @closeUngit()
     return
 
@@ -55,7 +54,7 @@ module.exports =
       # Not sure if below code sthill works for windows, but it may.  In such cases there is no reason for this distinctions.
       # this.ungit = child_process.exec(path.join(__dirname, '../node_modules/ungit/bin/ungit') + ' --no-b')
     else
-      this.ungit = child_process.exec(path.join(__dirname, '../node_modules/ungit/bin/ungit') + ' --no-b')
+      this.ungit = child_process.exec(path.join(__dirname, '../node_modules/ungit/bin/ungit') + ' --no-b --dev --maxNAutoRestartOnCrash=0')
 
     started = false
 
