@@ -2,6 +2,7 @@ url = require 'url'
 child_process = require 'child_process'
 path = require 'path'
 AtomUngitView = require './atom-ungit-view'
+isWin = /^win/.test process.platform
 
 module.exports =
   ungitView: null
@@ -26,12 +27,16 @@ module.exports =
       new AtomUngitView()
 
   kill: ->
-    ps_result = child_process.exec("ps -ef | grep 'ungit --no-b\|server.js --no-b'")
-    ps_result.stdout.on 'data', (data) ->
-      data.split('\n').map (line) ->
-        child_process.exec 'kill ' + line.split(' ')[1]
-        console.log 'kill ' + line.split(' ')[1]
-        return
+    if isWin
+      # possible solutions for windows, need someone with windows machine to test.
+      # child_process.exec 'taskkill /IM ungit'
+    else
+      ps_result = child_process.exec("/bin/ps -ef | grep 'ungit --no-b\|server.js --no-b'")
+      ps_result.stdout.on 'data', (data) ->
+        data.split('\n').map (line) ->
+          child_process.exec 'kill ' + line.split(' ')[1]
+          console.log 'kill ' + line.split(' ')[1]
+          return
     @closeUngit()
     return
 
@@ -46,11 +51,11 @@ module.exports =
     if @closeUngit()
       return;
 
-    this.ungit = child_process.exec(path.join(__dirname, '../node_modules/ungit/bin/ungit') + ' --no-b')
-    # in some cases, $PATH is not sourced with .bashrc, .profile nor .bash_profile
-    # I have resolved this issue by establishing a symbolic link but need better solutions.
-
-    # ungit = child_process.exec('echo $PATH')
+    if isWin
+      # Not sure if below code sthill works for windows, but it may.  In such cases there is no reason for this distinctions.
+      # this.ungit = child_process.exec(path.join(__dirname, '../node_modules/ungit/bin/ungit') + ' --no-b')
+    else
+      this.ungit = child_process.exec(path.join(__dirname, '../node_modules/ungit/bin/ungit') + ' --no-b')
 
     started = false
 
