@@ -1,4 +1,5 @@
 {$, $$$, ScrollView} = require 'atom'
+config = require './atom-ungit-config'
 
 module.exports =
 class AtomUngitView extends ScrollView
@@ -24,13 +25,13 @@ class AtomUngitView extends ScrollView
 
   createIframe: ->
     iframe = document.createElement("iframe")
-    iframe.sandbox="allow-same-origin allow-scripts"
+    iframe.sandbox = "allow-same-origin allow-scripts"
     iframe.src = @getRepoUri()
 
     @html $ iframe
 
   getRepoUri: ->
-    uri = "http://127.0.0.1:8448"
+    uri = config.getUngitHomeUri()
     if atom.project.getRootDirectory()
       uri += "/?noheader=true#/repository?path=" + atom.project.getRootDirectory().path
     uri

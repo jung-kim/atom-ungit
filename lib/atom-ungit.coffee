@@ -4,10 +4,11 @@ path = require 'path'
 AtomUngitView = require './atom-ungit-view'
 isWin = /^win/.test process.platform
 http = require 'http'
+config = require './atom-ungit-config'
 
 getOptions = (path) ->
   host: "127.0.0.1"
-  port: 8448
+  port: config.port
   path: path
   method: "POST"
 
