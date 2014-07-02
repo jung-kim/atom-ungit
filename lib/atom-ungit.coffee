@@ -75,7 +75,7 @@ module.exports =
           atom.workspace.getActivePane().activateItemForUri(config.uri)
         else
           previousActivePane = atom.workspace.getActivePane()
-          atom.workspace.open(config.uri, split: 'left').done (ungitView) ->
+          atom.workspace.open(config.uri, {split: 'left'}).done (ungitView) ->
             if ungitView instanceof AtomUngitView
               ungitView.loadUngit()
               previousActivePane.activate()
