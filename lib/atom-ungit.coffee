@@ -15,12 +15,12 @@ getOptions = (path) ->
 module.exports =
   ungitView: null
   ungit: null
-  uri: "ungit://ungit-URI"
+  uri: config.uri
   isStarted: () ->
     panes = atom.workspace.getPanes()
     result = false
     panes.forEach (pane) ->
-      result = (if result or pane.itemForUri("ungit://ungit-URI") then true else false)
+      result = (if result or pane.itemForUri(config.uri) then true else false)
       return
     result
 
@@ -55,7 +55,7 @@ module.exports =
     return false;
 
   toggle: ->
-    if atom.workspace.getActivePane().getActiveItem().getUri() is "ungit://ungit-URI"
+    if atom.workspace.getActivePane().getActiveItem().getUri() is config.uri
       @closeUngit()
       return
 
@@ -66,17 +66,16 @@ module.exports =
       @ungit = child_process.exec(path.join(__dirname, '../node_modules/ungit/bin/ungit') + ' --no-b --dev --maxNAutoRestartOnCrash=0')
 
     @ungit.unref()
-    uri = @uri
     self = this
 
     this.ungit.stdout.on "data", (data) ->
       message = data.toString()
       if message.contains('## Ungit started ##') || message.contains('Ungit server already running')
         if self.isStarted()
-          atom.workspace.getActivePane().activateItemForUri('ungit://ungit-URI')
+          atom.workspace.getActivePane().activateItemForUri(config.uri)
         else
           previousActivePane = atom.workspace.getActivePane()
-          atom.workspace.open(uri, split: 'left').done (ungitView) ->
+          atom.workspace.open(config.uri, split: 'left').done (ungitView) ->
             if ungitView instanceof AtomUngitView
               ungitView.loadUngit()
               previousActivePane.activate()

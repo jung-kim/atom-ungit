@@ -40,7 +40,7 @@ class AtomUngitView extends ScrollView
     "Ungit"
 
   getUri: ->
-    "ungit://ungit-URI"
+    config.uri
 
   showError: (result) ->
     failureMessage = result?.message
