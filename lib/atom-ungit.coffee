@@ -15,7 +15,14 @@ getOptions = (path) ->
 module.exports =
   ungitView: null
   ungit: null
-  uri: "ungit://ungit-URI"
+  uri: config.uri
+  isStarted: () ->
+    panes = atom.workspace.getPanes()
+    result = false
+    panes.forEach (pane) ->
+      result = (if result or pane.itemForUri(config.uri) then true else false)
+      return
+    result
 
   activate: () ->
     atom.workspaceView.command 'ungit:toggle', =>
@@ -48,28 +55,30 @@ module.exports =
     return false;
 
   toggle: ->
-    if @closeUngit()
-      return;
+    if atom.workspace.getActivePane().getActiveItem().getUri() is config.uri
+      @closeUngit()
+      return
 
     if isWin
       # Not sure if below code sthill works for windows, but it may.  In such cases there is no reason for this distinctions.
       # this.ungit = child_process.exec(path.join(__dirname, '../node_modules/ungit/bin/ungit') + ' --no-b')
     else
-      this.ungit = child_process.exec(path.join(__dirname, '../node_modules/ungit/bin/ungit') + ' --no-b --dev --maxNAutoRestartOnCrash=0')
+      @ungit = child_process.exec(path.join(__dirname, '../node_modules/ungit/bin/ungit') + ' --no-b --dev --maxNAutoRestartOnCrash=0')
 
-    started = false
+    @ungit.unref()
+    self = this
 
-    this.ungit.unref();
-    uri = @uri;
     this.ungit.stdout.on "data", (data) ->
-      message = data.toString();
-      if !started && (message.contains('## Ungit started ##') || message.contains('Ungit server already running'))
-        started = true
-        previousActivePane = atom.workspace.getActivePane()
-        atom.workspace.open(uri, searchAllPanes: true).done (ungitView) ->
-          if ungitView instanceof AtomUngitView
-            ungitView.loadUngit()
-            previousActivePane.activate()
+      message = data.toString()
+      if message.contains('## Ungit started ##') || message.contains('Ungit server already running')
+        if self.isStarted()
+          atom.workspace.getActivePane().activateItemForUri(config.uri)
+        else
+          previousActivePane = atom.workspace.getActivePane()
+          atom.workspace.open(config.uri, {split: 'left'}).done (ungitView) ->
+            if ungitView instanceof AtomUngitView
+              ungitView.loadUngit()
+              previousActivePane.activate()
       console.log message
       return
 
