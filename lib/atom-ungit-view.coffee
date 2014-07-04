@@ -13,15 +13,7 @@ class AtomUngitView extends ScrollView
 
   loadUngit: ->
     @showLoading()
-    @setTabLogo()
     @createIframe()
-
-  setTabLogo: ->
-    tbs = document.querySelectorAll("ul.tab-bar li.tab div.title")
-    i = 0
-    while i < tbs.length
-      tbs[i].className += " atom-ungit-tab"  if tbs[i].textContent is "Ungit"
-      i++
 
   createIframe: ->
     iframe = document.createElement("iframe")
@@ -38,6 +30,9 @@ class AtomUngitView extends ScrollView
 
   getTitle: ->
     "Ungit"
+
+  getIconName: ->
+    "ungit"
 
   getUri: ->
     config.uri
