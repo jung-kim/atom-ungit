@@ -55,7 +55,9 @@ module.exports =
     return false;
 
   toggle: ->
-    if atom.workspace.getActivePane().getActiveItem().getUri() is config.uri
+    activeItem = atom.workspace.getActivePane().getActiveItem()
+
+    if activeItem && activeItem.getUri() is config.uri
       @closeUngit()
       return
 
