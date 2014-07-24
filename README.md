@@ -4,7 +4,7 @@ A project to bring in [ungit](https://github.com/FredrikNoren/ungit) to Atom.io.
 
 Easiest way to work with git in atom.io.
 
-[![Screenshot](screenshot.png)](http://youtu.be/hkBVAi3oKvo)
+[![Screenshot](https://raw.githubusercontent.com/codingtwinky/atom-ungit/master/screenshot.png)](http://youtu.be/hkBVAi3oKvo)
 
 
 ###Key maps:
