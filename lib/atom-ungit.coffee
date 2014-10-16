@@ -65,7 +65,10 @@ module.exports =
       # Not sure if below code sthill works for windows, but it may.  In such cases there is no reason for this distinctions.
       # this.ungit = child_process.exec(path.join(__dirname, '../node_modules/ungit/bin/ungit') + ' --no-b')
     else
-      @ungit = child_process.exec(path.join(__dirname, '../node_modules/ungit/bin/ungit') + ' --no-b --dev --maxNAutoRestartOnCrash=0')
+      # not window ready...
+      globalUngitExec = 'ungit --no-b --dev --maxNAutoRestartOnCrash=0';
+      localUngitExec = path.join(__dirname, '../node_modules/ungit/bin/ungit') + ' --no-b --dev --maxNAutoRestartOnCrash=0';
+      @ungit = child_process.exec('if [ "`command -v ungit`" != "" ]; then ' + globalUngitExec + '; else ' + localUngitExec + '; fi')
 
     @ungit.unref()
     self = this
