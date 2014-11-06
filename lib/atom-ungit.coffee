@@ -6,6 +6,10 @@ isWin = /^win/.test process.platform
 http = require 'http'
 config = require './atom-ungit-config'
 
+# Mac doesn't set PATH env correctly somtimes, and it doesn't hurt to do below
+# for linux...
+process.env["PATH"] = process.env.PATH + ":/usr/local/bin"  if process.env.PATH.indexOf("/usr/local/bin") < 0  unless isWin
+
 getOptions = (path) ->
   host: "127.0.0.1"
   port: config.port
@@ -67,7 +71,8 @@ module.exports =
     else
       # not window ready...
       globalUngitExec = 'ungit --no-b --dev --maxNAutoRestartOnCrash=0';
-      localUngitExec = path.join(__dirname, '../node_modules/ungit/bin/ungit') + ' --no-b --dev --maxNAutoRestartOnCrash=0';
+      localUngitExec = path.join(__dirname, '../node_modules/.bin/ungit') + ' --no-b --dev --maxNAutoRestartOnCrash=0';
+      console.log localUngitExec
       @ungit = child_process.exec('if [ "`command -v ungit`" != "" ]; then ' + globalUngitExec + '; else ' + localUngitExec + '; fi')
 
     @ungit.unref()
