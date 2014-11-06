@@ -9,6 +9,8 @@ config = require './atom-ungit-config'
 # Mac doesn't set PATH env correctly somtimes, and it doesn't hurt to do below
 # for linux...
 process.env["PATH"] = process.env.PATH + ":/usr/local/bin"  if process.env.PATH.indexOf("/usr/local/bin") < 0  unless isWin
+console.log process.env.PATH
+
 
 getOptions = (path) ->
   host: "127.0.0.1"
@@ -60,20 +62,18 @@ module.exports =
 
   toggle: ->
     activeItem = atom.workspace.getActivePane().getActiveItem()
+    localUngitExec = path.join(__dirname, '../node_modules/ungit/bin/ungit') + ' --no-b --dev --maxNAutoRestartOnCrash=0';
+    globalUngitExec = 'ungit --no-b --dev --maxNAutoRestartOnCrash=0';
 
     if activeItem && activeItem.getUri() is config.uri
       @closeUngit()
       return
 
     if isWin
-      # Not sure if below code sthill works for windows, but it may.  In such cases there is no reason for this distinctions.
-      # this.ungit = child_process.exec(path.join(__dirname, '../node_modules/ungit/bin/ungit') + ' --no-b')
+      # may not work....  untested....
+      @ungit = child_process.exec(localUngitExec)
     else
-      # not window ready...
-      globalUngitExec = 'ungit --no-b --dev --maxNAutoRestartOnCrash=0';
-      localUngitExec = path.join(__dirname, '../node_modules/.bin/ungit') + ' --no-b --dev --maxNAutoRestartOnCrash=0';
-      console.log localUngitExec
-      @ungit = child_process.exec('if [ "`command -v ungit`" != "" ]; then ' + globalUngitExec + '; else ' + localUngitExec + '; fi')
+      @ungit = child_process.exec('if [ ! -z "`command -v ungit`" ]; then ' + globalUngitExec + '; else ' + localUngitExec + '; fi')
 
     @ungit.unref()
     self = this
