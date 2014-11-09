@@ -9,8 +9,6 @@ config = require './atom-ungit-config'
 # Mac doesn't set PATH env correctly somtimes, and it doesn't hurt to do below
 # for linux...
 process.env["PATH"] = process.env.PATH + ":/usr/local/bin"  if process.env.PATH.indexOf("/usr/local/bin") < 0  unless isWin
-console.log process.env.PATH
-
 
 getOptions = (path) ->
   host: "127.0.0.1"
@@ -88,6 +86,7 @@ module.exports =
           atom.workspace.open(config.uri, {split: 'left'}).done (ungitView) ->
             if ungitView instanceof AtomUngitView
               ungitView.loadUngit()
+            if (previousActivePane)
               previousActivePane.activate()
       console.log message
       return
