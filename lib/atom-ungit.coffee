@@ -62,7 +62,7 @@ module.exports =
 
   toggle: ->
     activeItem = atom.workspace.getActivePane().getActiveItem()
-    localUngitExec = path.join(__dirname, '../node_modules/ungit/bin/ungit') + ' --no-b --dev --maxNAutoRestartOnCrash=0';
+    localUngitExec = 'node ' + path.join(__dirname, '../node_modules/ungit/bin/ungit') + ' --no-b --dev --maxNAutoRestartOnCrash=0';
     globalUngitExec = 'ungit --no-b --dev --maxNAutoRestartOnCrash=0';
 
     if activeItem && activeItem.getUri() is config.uri
@@ -71,7 +71,7 @@ module.exports =
 
     if isWin
       # may not work....  untested....
-      @ungit = child_process.exec("node "+localUngitExec)
+      @ungit = child_process.exec(localUngitExec)
     else
       @ungit = child_process.exec('if [ ! -z "`command -v ungit`" ]; then ' + globalUngitExec + '; else ' + localUngitExec + '; fi')
 
