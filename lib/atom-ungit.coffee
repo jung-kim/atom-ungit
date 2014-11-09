@@ -71,7 +71,7 @@ module.exports =
 
     if isWin
       # may not work....  untested....
-      @ungit = child_process.exec(localUngitExec)
+      @ungit = child_process.exec("node "+localUngitExec)
     else
       @ungit = child_process.exec('if [ ! -z "`command -v ungit`" ]; then ' + globalUngitExec + '; else ' + localUngitExec + '; fi')
 
