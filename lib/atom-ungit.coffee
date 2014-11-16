@@ -83,9 +83,16 @@ module.exports =
         if paneWithAtomUngit
           paneWithAtomUngit.activateItemForUri(config.uri)
         else
-          atom.workspace.open(config.uri).done (ungitView) ->
-            if ungitView instanceof AtomUngitView
-              ungitView.loadUngit()
+          item = null
+          paneToAddAtomUngit = atom.workspace.getActivePane()
+          
+          atom.workspace.openers.forEach (openers) ->
+            item = openers(config.uri, null)  unless item
+            return
+
+          paneToAddAtomUngit.addItem item, 0
+          item.loadUngit()  if item instanceof AtomUngitView
+          paneToAddAtomUngit.activateItemAtIndex 0
 
       console.log message
       return
