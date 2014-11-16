@@ -20,12 +20,13 @@ module.exports =
   ungitView: null
   ungit: null
   uri: config.uri
-  isStarted: () ->
+  isViewExist: () ->
     panes = atom.workspace.getPanes()
-    result = false
+    result = null
     panes.forEach (pane) ->
-      result = (if result or pane.itemForUri(config.uri) then true else false)
-      return
+      if !result and pane.itemForUri(config.uri)
+        result = pane
+        return
     result
 
   activate: () ->
@@ -68,7 +69,6 @@ module.exports =
       return
 
     if isWin
-      # may not work....  untested....
       @ungit = child_process.exec(localUngitExec)
     else
       @ungit = child_process.exec('if [ ! -z "`command -v ungit`" ]; then ' + globalUngitExec + '; else ' + localUngitExec + '; fi')
@@ -79,15 +79,14 @@ module.exports =
     this.ungit.stdout.on "data", (data) ->
       message = data.toString()
       if message.contains('## Ungit started ##') || message.contains('Ungit server already running')
-        if self.isStarted()
-          atom.workspace.getActivePane().activateItemForUri(config.uri)
+        paneWithAtomUngit = self.isViewExist()
+        if paneWithAtomUngit
+          paneWithAtomUngit.activateItemForUri(config.uri)
         else
-          previousActivePane = atom.workspace.getActivePane()
-          atom.workspace.open(config.uri, {split: 'left'}).done (ungitView) ->
+          atom.workspace.open(config.uri).done (ungitView) ->
             if ungitView instanceof AtomUngitView
               ungitView.loadUngit()
-            if (previousActivePane)
-              previousActivePane.activate()
+
       console.log message
       return
 
