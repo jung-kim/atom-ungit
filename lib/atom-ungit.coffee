@@ -1,10 +1,11 @@
 url = require 'url'
 child_process = require 'child_process'
 path = require 'path'
-AtomUngitView = require './atom-ungit-view'
-isWin = /^win/.test process.platform
 http = require 'http'
+AtomUngitView = require './atom-ungit-view'
 config = require './atom-ungit-config'
+
+isWin = /^win/.test process.platform
 
 # Mac doesn't set PATH env correctly somtimes, and it doesn't hurt to do below
 # for linux...
@@ -45,10 +46,11 @@ module.exports =
 
       new AtomUngitView()
 
+  # close atom-ungit page and terminate ungit instance
   kill: ->
+    @closeUngit()
     http.request(getOptions("/api/testing/cleanup")).end()
     http.request(getOptions("/api/testing/shutdown")).end()
-    @closeUngit()
     return
 
   closeUngit: ->
@@ -58,31 +60,42 @@ module.exports =
       return true;
     return false;
 
+  # toggle ungit
+  #
+  # short cut key: ctrl-alt-u
   toggle: ->
     activeItem = atom.workspace.getActivePane().getActiveItem()
-    localUngitExec = 'node ' + path.join(__dirname, '../node_modules/ungit/bin/ungit') + ' --no-b --dev --maxNAutoRestartOnCrash=0';
-    globalUngitExec = 'ungit --no-b --dev --maxNAutoRestartOnCrash=0';
 
+    # atom-ungit is in focus, close atom-ungit page but do not terminate ungit process
     if activeItem && activeItem.getUri() is config.uri
       @closeUngit()
       return
+
+    # atom-ungit is not in focus, attempt to start ungit and open atom-ungit
+
+    localUngitExec = 'node ' + path.join(__dirname, '../node_modules/ungit/bin/ungit') + ' --no-b --dev --maxNAutoRestartOnCrash=0';
+    globalUngitExec = 'ungit --no-b --dev --maxNAutoRestartOnCrash=0';
 
     if isWin
       execCmd = localUngitExec
     else
       execCmd = 'if [ ! -z "`command -v ungit`" ]; then ' + globalUngitExec + '; else ' + localUngitExec + '; fi'
 
+    # start ungit process in background
     @ungit = child_process.exec(execCmd)
     @ungit.unref()
     self = this
 
     this.ungit.stdout.on "data", (data) ->
       message = data.toString()
+      # when ungit is running...
       if message.contains('## Ungit started ##') || message.contains('Ungit server already running')
         paneWithAtomUngit = self.isViewExist()
+        # there atom-ungit page is not in focus and focus to atom-ungit page
         if paneWithAtomUngit
           paneWithAtomUngit.activateItemForUri(config.uri)
         else
+          # open up atom-ungit page
           item = null
           paneToAddAtomUngit = atom.workspace.getActivePane()
           openers = atom.workspace.openers
@@ -100,5 +113,5 @@ module.exports =
       return
 
     this.ungit.stderr.on "data", (data) ->
-      console.log data.toString()
+      console.error data.toString()
       return
