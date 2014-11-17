@@ -22,12 +22,11 @@ module.exports =
   uri: config.uri
   isViewExist: () ->
     panes = atom.workspace.getPanes()
-    result = null
-    panes.forEach (pane) ->
-      if !result and pane.itemForUri(config.uri)
-        result = pane
-        return
-    result
+    n = panes.length - 1
+    while n > -1
+      return panes[n]  if panes[n].itemForUri(config.uri)
+      n--
+    return
 
   activate: () ->
     atom.workspaceView.command 'ungit:toggle', =>
@@ -69,10 +68,11 @@ module.exports =
       return
 
     if isWin
-      @ungit = child_process.exec(localUngitExec)
+      execCmd = localUngitExec
     else
-      @ungit = child_process.exec('if [ ! -z "`command -v ungit`" ]; then ' + globalUngitExec + '; else ' + localUngitExec + '; fi')
+      execCmd = 'if [ ! -z "`command -v ungit`" ]; then ' + globalUngitExec + '; else ' + localUngitExec + '; fi'
 
+    @ungit = child_process.exec(execCmd)
     @ungit.unref()
     self = this
 
@@ -85,10 +85,12 @@ module.exports =
         else
           item = null
           paneToAddAtomUngit = atom.workspace.getActivePane()
-          
-          atom.workspace.openers.forEach (openers) ->
-            item = openers(config.uri, null)  unless item
-            return
+          openers = atom.workspace.openers
+          n = openers.length - 1
+
+          while n > -1 and not item
+            item = openers[n](config.uri, null)
+            n--
 
           paneToAddAtomUngit.addItem item, 0
           item.loadUngit()  if item instanceof AtomUngitView
