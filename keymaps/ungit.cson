@@ -10,3 +10,5 @@
 'atom-workspace':
   'ctrl-alt-u': 'ungit:toggle'
   'ctrl-alt-k': 'ungit:kill'
+  'cmd-c': 'core:copy'
+  'cmd-v': 'core:paste'

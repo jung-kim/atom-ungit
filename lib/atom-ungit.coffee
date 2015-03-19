@@ -30,11 +30,11 @@ module.exports =
     return
 
   activate: () ->
-    atom.workspaceView.command 'ungit:toggle', =>
-      @toggle()
-
-    atom.workspaceView.command 'ungit:kill', =>
-      @kill()
+    atom.commands.add 'atom-workspace',
+      'ungit:toggle': =>
+        @toggle()
+      'ungit:kill': =>
+        @kill()
 
     atom.workspace.registerOpener (uriToOpen) ->
       try
