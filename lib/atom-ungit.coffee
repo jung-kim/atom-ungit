@@ -67,7 +67,7 @@ module.exports =
     activeItem = atom.workspace.getActivePane().getActiveItem()
 
     # atom-ungit is in focus, close atom-ungit page but do not terminate ungit process
-    if activeItem && activeItem.getUri() is config.uri
+    if activeItem?.getUri?() is config.uri
       @closeUngit()
       return
 
@@ -89,7 +89,7 @@ module.exports =
     this.ungit.stdout.on "data", (data) ->
       message = data.toString()
       # when ungit is running...
-      if message.contains('## Ungit started ##') || message.contains('Ungit server already running')
+      if message.indexOf('## Ungit started ##') || message.indexOf('Ungit server already running')
         paneWithAtomUngit = self.isViewExist()
         # there atom-ungit page is not in focus and focus to atom-ungit page
         if paneWithAtomUngit
