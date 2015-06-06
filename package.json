@@ -3,15 +3,17 @@
   "main": "./lib/atom-ungit",
   "version": "0.4.4",
   "description": "Atom package for ungit",
-  "activationCommands": [
-    "ungit:toggle"
-  ],
+  "activationCommands": {
+    "atom-workspace": ["ungit:toggle"]
+  },
   "repository": "https://github.com/codingtwinky/atom-ungit",
   "license": "MIT",
   "engines": {
     "atom": ">0.50.0"
   },
   "dependencies": {
-    "ungit": ">=0.8.3"
+    "ungit": ">=0.8.3",
+    "atom-space-pen-views": "^2.0.5",
+    "web-view": "^0.3.0"
   }
 }

@@ -1,49 +1,35 @@
-{$, $$$, ScrollView} = require 'atom'
-config = require './atom-ungit-config'
+# from https://github.com/gabceb/atom-web-view.
+# For some reason APM won't let me download the package
 
+{$, ScrollView} = require 'atom-space-pen-views'
+
+# View that renders the image of an {WebEditor}.
 module.exports =
 class AtomUngitView extends ScrollView
-  atom.deserializers.add(this)
 
   @content: ->
-    @div class: 'atom-ungit native-key-bindings', tabindex: -1
+    @div class: 'web-view-area', =>
+      @iframe id: 'web-view-iframe', name: 'disable-x-frame-options', tabindex: -1, src: "", width: "100%", height: "100%", frameBorder="0"
 
-  destroy: ->
-    @unsubscribe()
+  constructor: (uri) ->
+    super
+    @.find('#web-view-iframe').attr('src', uri)
 
-  loadUngit: ->
-    @showLoading()
-    @createIframe()
+  @deserialize: ({uri}) ->
 
-  createIframe: ->
-    iframe = document.createElement("iframe")
-    iframe.sandbox = "allow-same-origin allow-scripts"
-    iframe.src = @getRepoUri()
-
-    @html $ iframe
-
-  getRepoUri: ->
-    uri = config.getUngitHomeUri()
-    if atom.project.getRootDirectory()
-      uri += "/?noheader=true#/repository?path=" + atom.project.getRootDirectory().path
-    uri
-
+  # Gets the title of the page based on the uri
+  #
+  # Returns a {String}
   getTitle: ->
-    "Ungit"
+    @uri || 'Uri-web'
 
-  getIconName: ->
-    "ungit"
+  # Serializes this view
+  #
+  serialize: ->
+    {@uri, deserializer: @constructor.name}
 
-  getUri: ->
-    config.uri
-
-  showError: (result) ->
-    failureMessage = result?.message
-
-    @html $$$ ->
-      @h2 'Loading Ungit Failed!'
-      @h3 failureMessage if failureMessage?
-
-  showLoading: ->
-    @html $$$ ->
-      @div class: 'atom-html-spinner', 'Loading Ungit\u2026'
+  # Retrieves this view's pane.
+  #
+  # Returns a {Pane}.
+  getPane: ->
+    @parents('.pane').view()

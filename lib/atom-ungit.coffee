@@ -2,8 +2,8 @@ url = require 'url'
 child_process = require 'child_process'
 path = require 'path'
 http = require 'http'
-AtomUngitView = require './atom-ungit-view'
 config = require './atom-ungit-config'
+AtomUngitView = require './atom-ungit-view'
 
 isWin = /^win/.test process.platform
 
@@ -25,7 +25,7 @@ module.exports =
     panes = atom.workspace.getPanes()
     n = panes.length - 1
     while n > -1
-      return panes[n]  if panes[n].itemForUri(config.uri)
+      return panes[n]  if panes[n].getURI == config.uri
       n--
     return
 
@@ -36,15 +36,13 @@ module.exports =
       'ungit:kill': =>
         @kill()
 
-    atom.workspace.registerOpener (uriToOpen) ->
+    atom.workspace.addOpener (uriToOpen) ->
       try
         {protocol, host, pathname} = url.parse(uriToOpen)
       catch error
         return
-
       return unless protocol is 'ungit:'
-
-      new AtomUngitView()
+      new AtomUngitView(config.getUngitHomeUri() + "/?noheader=true#/repository?path=" + encodeURIComponent(atom.project.getPaths()[0]))
 
   # close atom-ungit page and terminate ungit instance
   kill: ->
@@ -88,26 +86,11 @@ module.exports =
 
     this.ungit.stdout.on "data", (data) ->
       message = data.toString()
+
       # when ungit is running...
-      if message.indexOf('## Ungit started ##') || message.indexOf('Ungit server already running')
-        paneWithAtomUngit = self.isViewExist()
-        # there atom-ungit page is not in focus and focus to atom-ungit page
-        if paneWithAtomUngit
-          paneWithAtomUngit.activateItemForUri(config.uri)
-        else
-          # open up atom-ungit page
-          item = null
-          paneToAddAtomUngit = atom.workspace.getActivePane()
-          openers = atom.workspace.openers
-          n = openers.length - 1
-
-          while n > -1 and not item
-            item = openers[n](config.uri, null)
-            n--
-
-          paneToAddAtomUngit.addItem item, 0
-          item.loadUngit()  if item instanceof AtomUngitView
-          paneToAddAtomUngit.activateItemAtIndex 0
+      if message.indexOf('## Ungit started ##') > -1 || message.indexOf('Ungit server already running') > -1
+        console.log ('open: ' + message)
+        atom.workspace.open(config.uri);
 
       console.log message
       return
