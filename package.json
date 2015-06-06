@@ -1,10 +1,12 @@
 {
   "name": "atom-ungit",
   "main": "./lib/atom-ungit",
-  "version": "0.4.4",
+  "version": "0.5.0",
   "description": "Atom package for ungit",
   "activationCommands": {
-    "atom-workspace": ["ungit:toggle"]
+    "atom-workspace": [
+      "ungit:toggle"
+    ]
   },
   "repository": "https://github.com/codingtwinky/atom-ungit",
   "license": "MIT",
