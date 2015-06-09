@@ -89,7 +89,6 @@ module.exports =
 
       # when ungit is running...
       if message.indexOf('## Ungit started ##') > -1 || message.indexOf('Ungit server already running') > -1
-        console.log ('open: ' + message)
         atom.workspace.open(config.uri);
 
       console.log message
