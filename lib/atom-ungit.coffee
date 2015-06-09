@@ -44,6 +44,15 @@ module.exports =
       return unless protocol is 'ungit:'
       new AtomUngitView(config.getUngitHomeUri() + "/?noheader=true#/repository?path=" + encodeURIComponent(atom.project.getPaths()[0]))
 
+    atom.workspace.onDidOpen (event) ->
+      if event.uri == config.uri
+        tbs = document.querySelectorAll("ul.tab-bar li.tab div.title")
+        i = 0
+        while i < tbs.length
+          tbs[i].className += " icon icon-ungit"  if tbs[i].textContent is "ungit://ungit-URI"
+          i++
+      return
+
   # close atom-ungit page and terminate ungit instance
   kill: ->
     @closeUngit()
