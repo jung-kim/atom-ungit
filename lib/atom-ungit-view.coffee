@@ -1,6 +1,7 @@
 # from https://github.com/gabceb/atom-web-view.
 # For some reason APM won't let me download the package
 
+config = require './atom-ungit-config'
 {$, ScrollView} = require 'atom-space-pen-views'
 
 # View that renders the image of an {WebEditor}.
@@ -11,9 +12,10 @@ class AtomUngitView extends ScrollView
     @div class: 'web-view-area', =>
       @iframe id: 'web-view-iframe', name: 'disable-x-frame-options', tabindex: -1, src: "", width: "100%", height: "100%", frameBorder: "0"
 
-  constructor: (uri) ->
+  constructor: (url) ->
     super
-    @.find('#web-view-iframe').attr('src', uri)
+    @uri = config.uri
+    @.find('#web-view-iframe').attr('src', url)
 
   @deserialize: ({uri}) ->
 
@@ -33,3 +35,6 @@ class AtomUngitView extends ScrollView
   # Returns a {Pane}.
   getPane: ->
     @parents('.pane').view()
+
+  getURI: ->
+    @uri
