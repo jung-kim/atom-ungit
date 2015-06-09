@@ -52,10 +52,9 @@ module.exports =
     return
 
   closeUngit: ->
-    previewPane = atom.workspace.paneForUri(@uri)
+    previewPane = atom.workspace.paneForURI(@uri)
     if previewPane
-      previewPane.destroyItem(previewPane.itemForUri(@uri))
-      return true;
+      return previewPane.destroyItem(previewPane.itemForURI(@uri))
     return false;
 
   # toggle ungit
