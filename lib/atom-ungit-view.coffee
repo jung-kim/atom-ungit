@@ -9,8 +9,8 @@ module.exports =
 class AtomUngitView extends ScrollView
 
   @content: ->
-    @div class: 'web-view-area', =>
-      @iframe id: 'web-view-iframe', name: 'disable-x-frame-options', tabindex: -1, src: "", width: "100%", height: "100%", frameBorder: "0"
+    @div class: 'web-view-area atom-ungit', =>
+      @iframe id: 'web-view-iframe', name: 'disable-x-frame-options', tabindex: -1, src: ""
 
   constructor: (url) ->
     super
