@@ -73,12 +73,11 @@ module.exports =
     activeItem = atom.workspace.getActivePane().getActiveItem()
 
     # atom-ungit is in focus, close atom-ungit page but do not terminate ungit process
-    if activeItem?.getUri?() is config.uri
+    if activeItem?.getURI?() is config.uri
       @closeUngit()
       return
 
     # atom-ungit is not in focus, attempt to start ungit and open atom-ungit
-
     localUngitExec = 'node ' + path.join(__dirname, '../node_modules/ungit/bin/ungit') + ' --no-b --dev --maxNAutoRestartOnCrash=0';
     globalUngitExec = 'ungit --no-b --dev --maxNAutoRestartOnCrash=0';
 
