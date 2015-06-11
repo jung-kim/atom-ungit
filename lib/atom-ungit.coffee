@@ -67,12 +67,7 @@ module.exports =
         @kill()
 
     atom.workspace.addOpener (uriToOpen) ->
-      try
-        {protocol, host, pathname} = url.parse(uriToOpen)
-      catch error
-        return
-      return unless protocol is 'ungit:'
-      atomUngitView
+      if uriToOpen == config.uri then atomUngitView else undefined
 
     atom.workspace.onDidOpen (event) ->
       if event.uri == config.uri
