@@ -12,10 +12,10 @@ class AtomUngitView extends ScrollView
     @div class: 'web-view-area atom-ungit', =>
       @iframe id: 'web-view-iframe', name: 'disable-x-frame-options', tabindex: -1, src: ""
 
-  constructor: (url) ->
+  constructor: (path) ->
     super
     @uri = config.uri
-    @.find('#web-view-iframe').attr('src', url)
+    @loadPath path
 
   @deserialize: ({uri}) ->
 
@@ -38,3 +38,8 @@ class AtomUngitView extends ScrollView
 
   getURI: ->
     @uri
+
+  loadPath: (path) ->
+    if @path != path
+      @path = path
+      @find('#web-view-iframe').attr 'src', config.getUngitHomeUri() + '/?noheader=true#/repository?path=' + encodeURIComponent(path)

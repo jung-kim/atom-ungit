@@ -30,6 +30,36 @@ module.exports =
     return
 
   activate: () ->
+    # dependent on tree-view package, which may not be a best idea...
+    packages = atom.packages.getActivePackages()
+    treeView = undefined
+    lastActiveProjectPath = undefined
+    n = 0
+    while n < packages.length
+      if packages[n].name == 'tree-view'
+        treeView = packages[n].mainModule.treeView
+        n += packages.length
+      n++
+
+    getActiveProject = ->
+      m = 0
+      projectPaths = atom.project.getPaths()
+      if treeView
+        while m < projectPaths.length
+          if treeView.getActivePath()?.startsWith(projectPaths[m])
+            return projectPaths[m]
+          m++
+      if projectPaths then projectPaths[0] else '/'
+
+    atomUngitView = new AtomUngitView(encodeURIComponent(getActiveProject()))
+
+    atom.workspace.onDidChangeActivePaneItem (item) ->
+      if item.uri == config.uri
+        atomUngitView.loadPath lastActiveProjectPath
+      else
+        lastActiveProjectPath = getActiveProject()
+      return
+
     atom.commands.add 'atom-workspace',
       'ungit:toggle': =>
         @toggle()
@@ -42,7 +72,7 @@ module.exports =
       catch error
         return
       return unless protocol is 'ungit:'
-      new AtomUngitView(config.getUngitHomeUri() + "/?noheader=true#/repository?path=" + encodeURIComponent(atom.project.getPaths()[0]))
+      atomUngitView
 
     atom.workspace.onDidOpen (event) ->
       if event.uri == config.uri
