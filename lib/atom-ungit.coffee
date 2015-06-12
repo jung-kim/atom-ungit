@@ -19,21 +19,11 @@ getOptions = (path) ->
 
 module.exports =
   ungitView: null
-  ungit: null
-  uri: config.uri
-  isViewExist: () ->
-    panes = atom.workspace.getPanes()
-    n = panes.length - 1
-    while n > -1
-      return panes[n]  if panes[n].getURI == config.uri
-      n--
-    return
-
   activate: () ->
     # dependent on tree-view package, which may not be a best idea...
     packages = atom.packages.getActivePackages()
     treeView = undefined
-    lastActiveProjectPath = undefined
+    self = this
     n = 0
     while n < packages.length
       if packages[n].name == 'tree-view'
@@ -51,11 +41,12 @@ module.exports =
           m++
       if projectPaths then projectPaths[0] else '/'
 
-    atomUngitView = new AtomUngitView(encodeURIComponent(getActiveProject()))
+    lastActiveProjectPath = getActiveProject();
+    @ungitView = new AtomUngitView(lastActiveProjectPath)
 
     atom.workspace.onDidChangeActivePaneItem (item) ->
       if item.uri == config.uri
-        atomUngitView.loadPath lastActiveProjectPath
+        self.ungitView.loadPath lastActiveProjectPath
       else
         lastActiveProjectPath = getActiveProject()
       return
@@ -67,7 +58,7 @@ module.exports =
         @kill()
 
     atom.workspace.addOpener (uriToOpen) ->
-      if uriToOpen == config.uri then atomUngitView else undefined
+      if uriToOpen == config.uri then self.ungitView else undefined
 
     atom.workspace.onDidOpen (event) ->
       if event.uri == config.uri
@@ -86,9 +77,9 @@ module.exports =
     return
 
   closeUngit: ->
-    previewPane = atom.workspace.paneForURI(@uri)
+    previewPane = atom.workspace.paneForURI(config.uri)
     if previewPane
-      return previewPane.destroyItem(previewPane.itemForURI(@uri))
+      return previewPane.destroyItem(previewPane.itemForURI(config.uri))
     return false;
 
   # toggle ungit
@@ -98,7 +89,7 @@ module.exports =
     activeItem = atom.workspace.getActivePane().getActiveItem()
 
     # atom-ungit is in focus, close atom-ungit page but do not terminate ungit process
-    if activeItem?.getURI?() is config.uri
+    if activeItem?.uri is config.uri
       @closeUngit()
       return
 
