@@ -18,7 +18,7 @@ getOptions = (path) ->
   method: "POST"
 
 module.exports =
-  ungitView: null
+  ungitView: new AtomUngitView()
   activate: () ->
     # dependent on tree-view package, which may not be a best idea...
     packages = atom.packages.getActivePackages()
@@ -42,7 +42,6 @@ module.exports =
       if projectPaths then projectPaths[0] else '/'
 
     lastActiveProjectPath = getActiveProject();
-    @ungitView = new AtomUngitView(lastActiveProjectPath)
 
     atom.workspace.onDidChangeActivePaneItem (item) ->
       if item and item.uri == config.uri
