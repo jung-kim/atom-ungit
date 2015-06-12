@@ -45,7 +45,7 @@ module.exports =
     @ungitView = new AtomUngitView(lastActiveProjectPath)
 
     atom.workspace.onDidChangeActivePaneItem (item) ->
-      if item.uri == config.uri
+      if item and item.uri == config.uri
         self.ungitView.loadPath lastActiveProjectPath
       else
         lastActiveProjectPath = getActiveProject()
@@ -61,7 +61,7 @@ module.exports =
       if uriToOpen == config.uri then self.ungitView else undefined
 
     atom.workspace.onDidOpen (event) ->
-      if event.uri == config.uri
+      if event and event.uri == config.uri
         tbs = document.querySelectorAll("ul.tab-bar li.tab div.title")
         i = 0
         while i < tbs.length
