@@ -39,7 +39,7 @@ module.exports =
           if treeView.getActivePath()?.startsWith(projectPaths[m])
             return projectPaths[m]
           m++
-      if projectPaths then projectPaths[0] else '/'
+      if projectPaths then projectPaths[0] else null
 
     lastActiveProjectPath = getActiveProject();
 

@@ -41,4 +41,7 @@ class AtomUngitView extends ScrollView
   loadPath: (path) ->
     if @path != path
       @path = path
-      @find('#web-view-iframe').attr 'src', config.getUngitHomeUri() + '/?noheader=true#/repository?path=' + encodeURIComponent(path)
+      src = config.getUngitHomeUri()
+      if path
+        src += '/?noheader=true#/repository?path=' + encodeURIComponent(path)
+      @find('#web-view-iframe').attr 'src', src
