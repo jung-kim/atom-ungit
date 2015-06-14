@@ -41,7 +41,7 @@ module.exports =
           m++
       if projectPaths then projectPaths[0] else null
 
-    lastActiveProjectPath = getActiveProject();
+    lastActiveProjectPath = getActiveProject()
 
     atom.workspace.onDidChangeActivePaneItem (item) ->
       if item and item.uri == config.uri
@@ -79,7 +79,7 @@ module.exports =
     previewPane = atom.workspace.paneForURI(config.uri)
     if previewPane
       return previewPane.destroyItem(previewPane.itemForURI(config.uri))
-    return false;
+    return false
 
   # toggle ungit
   #
@@ -93,8 +93,8 @@ module.exports =
       return
 
     # atom-ungit is not in focus, attempt to start ungit and open atom-ungit
-    localUngitExec = 'node ' + path.join(__dirname, '../node_modules/ungit/bin/ungit') + ' --no-b --dev --maxNAutoRestartOnCrash=0';
-    globalUngitExec = 'ungit --no-b --dev --maxNAutoRestartOnCrash=0';
+    localUngitExec = 'node ' + path.join(__dirname, '../node_modules/ungit/bin/ungit') + ' --no-b --dev --maxNAutoRestartOnCrash=0'
+    globalUngitExec = 'ungit --no-b --dev --maxNAutoRestartOnCrash=0'
 
     if isWin
       execCmd = localUngitExec
@@ -111,7 +111,7 @@ module.exports =
 
       # when ungit is running...
       if message.indexOf('## Ungit started ##') > -1 || message.indexOf('Ungit server already running') > -1
-        atom.workspace.open(config.uri);
+        atom.workspace.open(config.uri)
 
       console.log message
       return

@@ -10,7 +10,7 @@ class AtomUngitView extends ScrollView
 
   @content: ->
     @div class: 'web-view-area atom-ungit', =>
-      @iframe id: 'web-view-iframe', name: 'disable-x-frame-options', tabindex: -1, src: ""
+      @iframe id: 'web-view-iframe', name: 'disable-x-frame-options'
 
   constructor: () ->
     super
