@@ -32,8 +32,15 @@ module.exports =
       n++
 
     getActiveProject = ->
-      gitRepo = atom.project.getRepositories()[0]
-      if gitRepo then gitRepo.repo.workingDirectory else null
+      m = 0
+      projectPaths = atom.project.getPaths()
+      if treeView
+        while m < projectPaths.length
+          if treeView.getActivePath()?.startsWith(projectPaths[m])
+            gitRepo = atom.project.getRepositories()[m]
+            return if gitRepo then gitRepo.repo.workingDirectory else null
+          m++
+      if projectPaths then projectPaths[0] else null
 
     lastActiveProjectPath = getActiveProject()
 
