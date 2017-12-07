@@ -14,7 +14,7 @@
     "atom": ">0.50.0"
   },
   "dependencies": {
-    "ungit": ">=0.8.3",
-    "atom-space-pen-views": "^2.0.5"
+    "atom-space-pen-views": "^2.0.5",
+    "ungit": "^1.3.3"
   }
 }
