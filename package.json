@@ -1,7 +1,7 @@
 {
   "name": "atom-ungit",
   "main": "./lib/atom-ungit",
-  "version": "0.6.0",
+  "version": "0.7.0",
   "description": "Atom package for ungit",
   "activationCommands": {
     "atom-workspace": [
@@ -14,7 +14,8 @@
     "atom": ">0.50.0"
   },
   "dependencies": {
-    "atom-space-pen-views": "^2.0.5",
-    "ungit": "^1.3.3"
+    "atom-space-pen-views": "^2.2.0",
+    "ungit": "^1.4.25",
+    "ps-node": "~0.1.6"
   }
 }
