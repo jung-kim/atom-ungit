@@ -4,7 +4,7 @@ path = require 'path'
 http = require 'http'
 config = require './atom-ungit-config'
 AtomUngitView = require './atom-ungit-view'
-
+ps = require 'ps-node'
 isWin = /^win/.test process.platform
 
 # Mac doesn't set PATH env correctly somtimes, and it doesn't hurt to do below
@@ -103,20 +103,34 @@ module.exports =
       execCmd = 'if [ ! -z "`command -v ungit`" ]; then ' + globalUngitExec + '; else ' + localUngitExec + '; fi'
 
     # start ungit process in background
-    @ungit = child_process.exec(execCmd)
-    @ungit.unref()
-    self = this
+    ps.lookup({
+      command: 'node',
+      arguments: 'ungit',
+    }, (err, resultList) ->
+      console.log err
+      console.log resultList
+      if err
+        console.err "error while process lookup #{ err }"
+        throw err;
 
-    this.ungit.stdout.on "data", (data) ->
-      message = data.toString()
+      if resultList.length < 1
+        @ungit = child_process.exec(execCmd)
+        @ungit.unref()
+        self = this
 
-      # when ungit is running...
-      if message.indexOf('## Ungit started ##') > -1 || message.indexOf('Ungit server already running') > -1
+        this.ungit.stdout.on "data", (data) ->
+          message = data.toString()
+
+          # when ungit is running...
+          if message.indexOf('## Ungit started ##') > -1 || message.indexOf('Ungit server already running') > -1
+            atom.workspace.open(config.uri)
+
+          console.log message
+          return
+
+        this.ungit.stderr.on "data", (data) ->
+          console.error data.toString()
+          return
+      else
         atom.workspace.open(config.uri)
-
-      console.log message
-      return
-
-    this.ungit.stderr.on "data", (data) ->
-      console.error data.toString()
-      return
+    )
